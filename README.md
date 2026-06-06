@@ -1,7 +1,7 @@
 # Benchmarking Multiconductor OPF taskforce
 Respository for the math and data model spec of the Benchmarking Multiconductor OPF taskforce.
 
-_Note: for details of the upcoming PowerUp 2026 Conference workshop, please see [here](https://github.com/frederikgeth/bmopf-report/blob/powerup-info/README.md)._
+_Note: for details of the upcoming PowerUp 2026 Conference workshop, please see [here](https://github.com/frederikgeth/bmopf-report/blob/powerup-info/powerup-workshop-agenda.md)._
 
 This document is curated and maintained by the IEEE PES Task Force on Benchmarking Multiconductor OPF for Distribution Systems, and is designed to evaluate a well established version of the the Optimal Power Flow for Multiconductor distribution networks.
 
