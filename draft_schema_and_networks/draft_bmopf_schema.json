@@ -175,11 +175,11 @@
                     }
                 },
                 "patternProperties": {
-                    "^G\\d\\d": {
+                    "^G_\\d_\\d": {
                         "type": "number",
                         "description": "Array elements of the conductance [S]"
                     },
-                    "^B\\d\\d": {
+                    "^B_\\d_\\d": {
                         "type": "number",
                         "description": "Array elements of the susceptance [S]"
                     }
@@ -187,8 +187,8 @@
                 "required": [
                     "bus",
                     "terminal_map",
-                    "G11",
-                    "B11"
+                    "G_1_1",
+                    "B_1_1"
                 ]
             }
         },
@@ -312,34 +312,34 @@
                     }
                 },
                 "patternProperties":{
-                    "^R_series\\d\\d": {
+                    "^R_series_\\d_\\d": {
                         "type": "number",
                         "description": "Element of the series resistance matrix [Ohm/m]"
                     },
-                    "^X_series\\d\\d": {
+                    "^X_series_\\d_\\d": {
                         "type": "number",
                         "description": "Element of the series reactance matrix [Ohm/m]"
                     },
-                    "^G_from\\d\\d": {
+                    "^G_from_\\d_\\d": {
                         "type": "number",
                         "description": "Element of the shunt conductance matrix [S/m]"
                     },
-                    "^G_to\\d\\d": {
+                    "^G_to_\\d_\\d": {
                         "type": "number",
                         "description": "Element of the shunt conductance matrix [S/m]"
                     },
-                    "^B_from\\d\\d": {
+                    "^B_from_\\d_\\d": {
                         "type": "number",
                         "description": "Element of the shunt susceptance matrix [S/m]"
                     },
-                    "^B_to\\d\\d": {
+                    "^B_to_\\d_\\d": {
                         "type": "number",
                         "description": "Element of the shunt susceptance matrix [S/m]"
                     }
                 },
                 "required": [
-                    "R_series11",
-                    "X_series11"
+                    "R_series_1_1",
+                    "X_series_1_1"
                 ]
             }
         },
