@@ -1,4 +1,15 @@
 {
+  "terminal_conventions": {
+    "phase": [
+      "a",
+      "b",
+      "c"
+    ],
+    "neutral": [
+      "n"
+    ],
+    "earth": []
+  },
   "voltage_source": {
     "source": {
       "v_magnitude": [
