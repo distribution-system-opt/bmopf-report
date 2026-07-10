@@ -92,7 +92,7 @@
   "meta": {
     "$schema": "https://raw.githubusercontent.com/frederikgeth/bmopf-report/main/schema/bmopf.json",
     "created": "2026-07-03T22:42:54Z",
-    "generator": {
+    "case_study_generator": {
       "version": "0.1.0",
       "tool": "BMOPFTools.jl"
     }
