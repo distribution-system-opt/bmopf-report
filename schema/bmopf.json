@@ -40,7 +40,7 @@
                 },
                 "data_sources": {
                     "type": "array",
-                    "description": "Upstream data sources this case was derived from (renamed from 'sources' to avoid ambiguity with voltage/current sources)",
+                    "description": "Upstream data sources from which this case was derived",
                     "items": {
                         "type": "object",
                         "properties": {
@@ -55,7 +55,7 @@
                 },
                 "case_study_generator": {
                     "type": "object",
-                    "description": "The tool that generated this case file (renamed from 'generator' to avoid ambiguity with the network generator component)",
+                    "description": "Tool that generated this case file",
                     "properties": {
                         "tool":    { "type": "string" },
                         "version": { "type": "string" }
@@ -158,7 +158,7 @@
                     },
                     "time_series": {
                         "type": "object",
-                        "description": "Map from parameter name to time_series id for time-varying scaling"
+                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": ["terminal_names"]
@@ -205,7 +205,7 @@
                     },
                     "time_series": {
                         "type": "object",
-                        "description": "Map from parameter name to time_series id for time-varying scaling"
+                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "patternProperties": {
@@ -276,7 +276,7 @@
                     },
                     "time_series": {
                         "type": "object",
-                        "description": "Map from parameter name to time_series id for time-varying scaling"
+                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": [
@@ -289,7 +289,7 @@
         },
         "shunt": {
             "type": "object",
-            "description": "Passive shunt elements (e.g., for capacitors, grounding impedance)",
+            "description": "Passive shunt admittance elements, including grounding impedances",
             "additionalProperties": {
                 "type": "object",
                 "additionalProperties": false,
@@ -302,7 +302,7 @@
                     },
                     "time_series": {
                         "type": "object",
-                        "description": "Map from parameter name to time_series id for time-varying scaling"
+                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "patternProperties": {
@@ -337,7 +337,7 @@
                     },
                     "q_rated": {
                         "type": "array",
-                        "description": "Rated reactive power [var] per phase (WYE) or per phase-pair (DELTA), length 1 for SINGLE_PHASE",
+                        "description": "Rated reactive power [var] per phase (WYE) or per phase-pair (DELTA). Balanced banks repeat the same rating for each phase or phase-pair; length 1 for SINGLE_PHASE.",
                         "items": { "$ref": "#/$defs/nonnegative_number" }
                     },
                     "v_nom": {
@@ -424,7 +424,7 @@
                     },
                     "time_series": {
                         "type": "object",
-                        "description": "Map from parameter name to time_series id for time-varying scaling"
+                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": [
@@ -480,7 +480,7 @@
                     },
                     "i_max": {
                         "type": "array",
-                        "description": "Optional per-conductor current-magnitude limit [A]. WYE: one entry per phase, plus a recommended final entry for the neutral return conductor (length = phases or phases+1; a phases-only vector leaves the neutral unrated and warns, since the neutral may carry more than the phases under unbalance). SINGLE_PHASE: length 1 or 2 (phase and return share a current; a length-1 vector is standardised to 2). Stamps crg^2 + cig^2 <= i_max^2 on each phase current, and (sum crg)^2 + (sum cig)^2 <= i_max_neutral^2 on the neutral return when the extra entry is present. DELTA generators are future work (see the math spec for the array rules).",
+                        "description": "Optional per-conductor current-magnitude limits [A]. WYE accepts one entry per phase and an optional final neutral-return entry; SINGLE_PHASE accepts one or two entries. DELTA generators are future work. See the BMOPF math and data specification for the generator current-limit constraint.",
                         "items": {
                             "$ref": "#/$defs/nonnegative_number"
                         }
@@ -503,7 +503,7 @@
                     },
                     "time_series": {
                         "type": "object",
-                        "description": "Map from parameter name to time_series id for time-varying scaling"
+                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": [
@@ -655,7 +655,7 @@
                     },
                     "time_series": {
                         "type": "object",
-                        "description": "Map from parameter name to time_series id for time-varying scaling"
+                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": [
@@ -669,7 +669,7 @@
         },
         "control_profile": {
             "type": "object",
-            "description": "Reusable smart-IBR control-law profiles, referenced by IBRs (linecode-style sharing). Each sub-object is optional; its presence activates the corresponding control law.",
+            "description": "Optional IBR extension: reusable control-law profiles referenced by IBRs (linecode-style sharing). Each sub-object is optional; its presence activates the corresponding control law.",
             "additionalProperties": {
                 "type": "object",
                 "description": "A named control profile. Additional control-law sub-objects beyond those defined here are tolerated for forward-compatibility.",
@@ -1031,7 +1031,7 @@
                     },
                     "time_series": {
                         "type": "object",
-                        "description": "Map from parameter name to time_series id for time-varying scaling"
+                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": [
@@ -1504,7 +1504,7 @@
                     },
                     "time_series": {
                         "type": "object",
-                        "description": "Map from parameter name to time_series id for time-varying scaling"
+                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": [
@@ -1622,7 +1622,7 @@
                     },
                     "time_series": {
                         "type": "object",
-                        "description": "Map from parameter name to time_series id for time-varying scaling"
+                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": [
