@@ -309,7 +309,7 @@
         },
         "capacitor": {
             "type": "object",
-            "description": "Fixed (nameplate-rated) shunt capacitor banks. Susceptance B = q_rated/v_nom^2; delivers Q = B*V^2.",
+            "description": "Fixed (nameplate-rated) shunt capacitor banks. A bank delivers its rated reactive power q_rated when the voltage across the capacitor element terminals equals their nominal value. The susceptance of a single capacitor element is b = q_rated/(beta*v_nom^2), where beta = 1 for SINGLE_PHASE (v_nom is across the sole element), beta = 1 for WYE (the three elements each see v_nom/sqrt(3), so 3*b*(v_nom/sqrt(3))^2 = q_rated), and beta = 3 for DELTA (the three elements each see the full v_nom, so 3*b*v_nom^2 = q_rated).",
             "additionalProperties": {
                 "type": "object",
                 "additionalProperties": false,
@@ -320,13 +320,12 @@
                         "$ref": "#/$defs/configuration_type"
                     },
                     "q_rated": {
-                        "type": "array",
-                        "description": "Rated reactive power [var] per phase (WYE) or per phase-pair (DELTA). Balanced banks repeat the same rating for each phase or phase-pair; length 1 for SINGLE_PHASE.",
-                        "items": { "$ref": "#/$defs/nonnegative_number" }
+                        "$ref": "#/$defs/nonnegative_number",
+                        "description": "Nameplate rated reactive power of the whole bank [var], delivered when the voltage across the capacitor element terminals equals v_nom. For WYE and DELTA this is the total across all three elements, not a per-element rating."
                     },
                     "v_nom": {
                         "$ref": "#/$defs/nonnegative_number",
-                        "description": "Rated voltage [V]: phase-to-neutral for WYE/SINGLE_PHASE, line-to-line for DELTA"
+                        "description": "Nameplate nominal voltage [V]: line-to-line for the three-phase configurations (both WYE and DELTA); for SINGLE_PHASE, the nominal voltage across the terminals of the individual capacitor element."
                     }
                 },
                 "required": ["bus", "terminal_map", "configuration", "q_rated", "v_nom"]
