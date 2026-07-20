@@ -155,10 +155,6 @@
                     "vzero_max": {
                         "$ref": "#/$defs/nonnegative_number",
                         "description": "Maximum zero-sequence voltage magnitude [V] (three-phase buses); the lower bound is always 0"
-                    },
-                    "time_series": {
-                        "type": "object",
-                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": ["terminal_names"]
@@ -202,10 +198,6 @@
                         "type": "array",
                         "items": { "$ref": "#/$defs/nonnegative_number" },
                         "description": "Per-phase apparent-power limit [VA]; overrides the linecode's s_max for this line"
-                    },
-                    "time_series": {
-                        "type": "object",
-                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "patternProperties": {
@@ -273,10 +265,6 @@
                     },
                     "bus": {
                         "$ref": "#/$defs/bus_type"
-                    },
-                    "time_series": {
-                        "type": "object",
-                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": [
@@ -299,10 +287,6 @@
                     },
                     "terminal_map": {
                         "$ref": "#/$defs/terminal_map_type"
-                    },
-                    "time_series": {
-                        "type": "object",
-                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "patternProperties": {
@@ -421,10 +405,6 @@
                     "gamma_q": {
                         "type": "array",
                         "items": {"type": "number", "description": "Reactive-power voltage exponent (exponential model)"}
-                    },
-                    "time_series": {
-                        "type": "object",
-                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": [
@@ -500,10 +480,6 @@
                     },
                     "terminal_map": {
                         "$ref": "#/$defs/terminal_map_type"
-                    },
-                    "time_series": {
-                        "type": "object",
-                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": [
@@ -800,10 +776,6 @@
                         "type": "array",
                         "description": "Maximum permitted current passing through each conductor of the switch [A]",
                         "items": { "$ref": "#/$defs/nonnegative_number" }
-                    },
-                    "time_series": {
-                        "type": "object",
-                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": [
@@ -834,26 +806,6 @@
                     "$ref": "#/$defs/three_phase_transformer",
                     "description": "Delta-to-Wye transformer object, with series impedance defined on the wye-side"
                 }
-            }
-        },
-        "time_series": {
-            "type": "object",
-            "description": "Named time-series profiles. Components reference a profile via their own time_series map (parameter name -> profile id); get_snapshot multiplies the static parameter by values[t_index]. Optional extension: time-series support is under review for the July release.",
-            "additionalProperties": {
-                "type": "object",
-                "properties": {
-                    "time": {
-                        "type": "array",
-                        "items": { "type": "number" },
-                        "description": "Optional time stamps for the steps"
-                    },
-                    "values": {
-                        "type": "array",
-                        "items": { "type": "number" },
-                        "description": "Multiplicative scale factors applied to the referenced static parameter"
-                    }
-                },
-                "required": ["values"]
             }
         },
         "terminal_conventions": {
@@ -986,10 +938,6 @@
                         "type": "array",
                         "items": { "$ref": "#/$defs/nonnegative_number" },
                         "description": "Per-conductor 'to'-side current limit [A]"
-                    },
-                    "time_series": {
-                        "type": "object",
-                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": [
@@ -1092,10 +1040,6 @@
                     "b_no_load": {
                         "type": "number",
                         "description": "No-load (magnetising) shunt susceptance [S], stamped across the 'from'-side (wye) winding"
-                    },
-                    "time_series": {
-                        "type": "object",
-                        "description": "Optional extension: map from parameter name to time_series id for time-varying scaling"
                     }
                 },
                 "required": [
