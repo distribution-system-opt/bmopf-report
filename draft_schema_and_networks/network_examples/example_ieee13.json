@@ -90,7 +90,7 @@
     }
   },
   "meta": {
-    "$schema": "https://raw.githubusercontent.com/frederikgeth/bmopf-report/main/schema/bmopf.json",
+    "$schema": "https://raw.githubusercontent.com/frederikgeth/bmopf-report/main/draft_schema_and_networks/draft_bmopf_schema.json",
     "created": "2026-07-03T22:42:54Z",
     "case_study_generator": {
       "version": "0.1.0",

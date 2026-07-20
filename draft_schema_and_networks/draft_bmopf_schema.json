@@ -1,6 +1,6 @@
 {
     "$schema":"https://json-schema.org/draft/2020-12/schema",
-    "$id":"https://raw.githubusercontent.com/frederikgeth/bmopf-report/main/schema/bmopf.json",
+    "$id":"https://raw.githubusercontent.com/frederikgeth/bmopf-report/main/draft_schema_and_networks/draft_bmopf_schema.json",
     "title":"BMOPF OPF test case schema",
     "version": "0.1.0",
     "type": "object",

@@ -10,8 +10,8 @@ from jschon import create_catalog, JSON, JSONSchema
 
 schema_filename = os.path.join(
     '.',
-    'schema',
-    'bmopf.json'
+    'draft_schema_and_networks',
+    'draft_bmopf_schema.json'
 )
 
 # the two examples to choose from for now
