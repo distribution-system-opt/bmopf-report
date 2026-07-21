@@ -309,7 +309,7 @@
         },
         "capacitor": {
             "type": "object",
-            "description": "Fixed (nameplate-rated) shunt capacitor banks. A bank delivers its rated reactive power q_rated when the voltage across the capacitor element terminals equals their nominal value. The susceptance of a single capacitor element is b = q_rated/(beta*v_nom^2), where beta = 1 for SINGLE_PHASE (v_nom is across the sole element), beta = 1 for WYE (the three elements each see v_nom/sqrt(3), so 3*b*(v_nom/sqrt(3))^2 = q_rated), and beta = 3 for DELTA (the three elements each see the full v_nom, so 3*b*v_nom^2 = q_rated).",
+            "description": "Fixed (nameplate-rated) shunt capacitor banks. See the math and data model for the element definitions and the q_rated/v_nom conventions per configuration.",
             "additionalProperties": {
                 "type": "object",
                 "additionalProperties": false,
@@ -333,7 +333,7 @@
         },
         "load": {
             "type": "object",
-            "description": "Load elements. p_nom/q_nom are the nominal active/reactive powers, delivered when the voltage across each sub-load equals its nominal value. For a voltage drop dU across sub-load k (phase-to-neutral for WYE, terminal-pair difference for SINGLE_PHASE, line-to-line for DELTA), the ZIP model gives P_k = p_nom*(alpha_z*x^2 + alpha_i*x + alpha_p) and Q_k = q_nom*(beta_z*x^2 + beta_i*x + beta_p), and the exponential model gives P_k = p_nom*x^gamma_p and Q_k = q_nom*x^gamma_q, where x = |dU|/(k_beta*v_nom). The constant k_beta = 1 for DELTA and SINGLE_PHASE, and k_beta = 1/sqrt(3) for WYE (the line-to-line v_nom is split across the wye sub-loads). Single-mode models are the ZIP special cases (1,0,0) constant impedance, (0,1,0) constant current, (0,0,1) constant power; integer exponential exponents gamma in {0,1,2} coincide with those terms.",
+            "description": "Load elements. p_nom/q_nom are the nominal active/reactive powers; the ZIP and exponential voltage-dependence models and their coefficients are defined in the math and data model.",
             "additionalProperties": {
                 "type": "object",
                 "additionalProperties": false,
@@ -363,14 +363,14 @@
                     },
                     "model": {
                         "type": "string",
-                        "description": "Voltage dependence of the load: constant_power (default), constant_current (P proportional to |V|), constant_impedance (P proportional to |V|^2), zip (polynomial in |V|), or exponential (power law in |V|)",
-                        "enum": ["constant_power", "constant_current", "constant_impedance", "zip", "exponential"]
+                        "description": "Voltage dependence of the load (default CONSTANT_POWER); see the math and data model for the definitions.",
+                        "enum": ["CONSTANT_POWER", "CONSTANT_CURRENT", "CONSTANT_IMPEDANCE", "ZIP", "EXPONENTIAL"]
                     },
                     "v_nom": {
                         "type": "array",
                         "items": {
                             "type": "number",
-                            "description": "Nominal voltage at which p_nom/q_nom are specified [V]: line-to-line for the three-phase configurations (both WYE and DELTA); for SINGLE_PHASE, the nominal voltage across the load terminals. The wye phase-to-neutral split is handled by k_beta = 1/sqrt(3), not by this value. Required when model is zip or exponential."
+                            "description": "Nominal voltage at which p_nom/q_nom are specified [V]: line-to-line for the three-phase configurations (both WYE and DELTA); for SINGLE_PHASE, the nominal voltage across the load terminals. Required unless model is CONSTANT_POWER; see the math and data model for the voltage-dependence formulation."
                         }
                     },
                     "alpha_z": {
@@ -610,22 +610,17 @@
         "terminal_conventions": {
             "type": "object",
             "additionalProperties": false,
-            "description": "Case-wide classification of the terminal-name labels used across all AC buses into phase, neutral and earth roles. Optional: when present it is the authoritative source of truth for which labels are neutral/phase/earth (ingestion and the OPF resolve roles from it rather than guessing); when absent, roles are inferred from the naming convention (a label 'n'/'N' is neutral, all others phase) and W.CONV.TERMINAL_ROLES_INFERRED is raised. Exported on every write.",
+            "description": "Case-wide classification of the terminal-name labels used across all AC buses into phase and neutral roles. Optional: when present it is the authoritative source of truth for which labels are neutral/phase (ingestion and the OPF resolve roles from it rather than guessing); when absent, roles are inferred from the naming convention (a label 'n'/'N' is neutral, all others phase) and W.CONV.TERMINAL_ROLES_INFERRED is raised. Exported on every write.",
             "properties": {
                 "phase": {
                     "type": "array",
                     "items": { "type": "string" },
-                    "description": "Terminal-name labels that denote a phase conductor (e.g. [\"a\",\"b\",\"c\"], or split-phase legs). A bus terminal in none of the three lists is treated as a phase and W.CONV.TERMINAL_UNCLASSIFIED is raised."
+                    "description": "Terminal-name labels that denote a phase conductor (e.g. [\"a\",\"b\",\"c\"], or split-phase legs). A bus terminal in neither list is treated as a phase and W.CONV.TERMINAL_UNCLASSIFIED is raised."
                 },
                 "neutral": {
                     "type": "array",
                     "items": { "type": "string" },
                     "description": "Terminal-name labels that denote a neutral conductor (typically [\"n\"]). A bus is expected to carry at most one neutral terminal."
-                },
-                "earth": {
-                    "type": "array",
-                    "items": { "type": "string" },
-                    "description": "Terminal-name labels that denote a dedicated earth/PE *wire* conductor. The ground reference itself stays implicit (grounding is modelled via grounding impedances / perfectly_grounded_terminals); this list captures only genuine earth-wire terminals and is empty for standard OpenDSS-derived cases."
                 }
             }
         }
@@ -682,22 +677,6 @@
                         "$ref": "#/$defs/nonnegative_number",
                         "description": "Transformer series reactance on the 'to' side [Ohm]"
                     },
-                    "r_neutral_from": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "Winding neutral grounding resistance on the 'from' side [Ohm]: internal grounding branch from the winding's shared neutral terminal to earth (OpenDSS rneut); stand-alone transformer property, external groundings stay on buses/shunts"
-                    },
-                    "x_neutral_from": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "Winding neutral grounding reactance on the 'from' side [Ohm]: internal grounding branch from the winding's shared neutral terminal to earth (OpenDSS xneut)"
-                    },
-                    "r_neutral_to": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "Winding neutral grounding resistance on the 'to' side [Ohm]: internal grounding branch from the winding's shared neutral terminal to earth (OpenDSS rneut); stand-alone transformer property, external groundings stay on buses/shunts"
-                    },
-                    "x_neutral_to": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "Winding neutral grounding reactance on the 'to' side [Ohm]: internal grounding branch from the winding's shared neutral terminal to earth (OpenDSS xneut)"
-                    },
                     "bus_from": {
                         "type": "string",
                         "description": "'from' bus for the element"
@@ -719,14 +698,6 @@
                     "v_nom_from": {
                         "$ref": "#/$defs/nonnegative_number",
                         "description": "Nominal voltage of the 'from'-side winding [V]"
-                    },
-                    "g_no_load": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "No-load (core-loss) shunt conductance [S], stamped across the 'from'-side winding"
-                    },
-                    "b_no_load": {
-                        "type": "number",
-                        "description": "No-load (magnetising) shunt susceptance [S], stamped across the 'from'-side winding"
                     },
                     "i_max_from": {
                         "type": "array",
@@ -762,43 +733,11 @@
                     },
                     "r_series": {
                         "$ref": "#/$defs/nonnegative_number",
-                        "description": "Legacy lumped series resistance on the wye-connected winding [Ohm]; migrated on parse to r_series_from (with r_series_to = 0)"
+                        "description": "Transformer series resistance, defined on the wye-side winding [Ohm]"
                     },
                     "x_series": {
                         "$ref": "#/$defs/nonnegative_number",
-                        "description": "Legacy lumped series reactance on the wye-connected winding [Ohm]; migrated on parse to x_series_from (with x_series_to = 0)"
-                    },
-                    "r_series_from": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "Transformer series resistance on the 'from'-side winding [Ohm]"
-                    },
-                    "x_series_from": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "Transformer series reactance on the 'from'-side winding [Ohm]"
-                    },
-                    "r_series_to": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "Transformer series resistance on the 'to'-side winding [Ohm]"
-                    },
-                    "x_series_to": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "Transformer series reactance on the 'to'-side winding [Ohm]"
-                    },
-                    "r_neutral_from": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "Winding neutral grounding resistance on the 'from' side [Ohm]: internal grounding branch from the winding's shared neutral terminal to earth (OpenDSS rneut); stand-alone transformer property, external groundings stay on buses/shunts"
-                    },
-                    "x_neutral_from": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "Winding neutral grounding reactance on the 'from' side [Ohm]: internal grounding branch from the winding's shared neutral terminal to earth (OpenDSS xneut)"
-                    },
-                    "r_neutral_to": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "Winding neutral grounding resistance on the 'to' side [Ohm]: internal grounding branch from the winding's shared neutral terminal to earth (OpenDSS rneut); stand-alone transformer property, external groundings stay on buses/shunts"
-                    },
-                    "x_neutral_to": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "Winding neutral grounding reactance on the 'to' side [Ohm]: internal grounding branch from the winding's shared neutral terminal to earth (OpenDSS xneut)"
+                        "description": "Transformer series reactance, defined on the wye-side winding [Ohm]"
                     },
                     "i_max_from": {
                         "type": "array",
@@ -831,14 +770,6 @@
                     "v_nom_from": {
                         "$ref": "#/$defs/nonnegative_number",
                         "description": "Nominal phase-to-phase voltage of the 'from'-side winding [V]"
-                    },
-                    "g_no_load": {
-                        "$ref": "#/$defs/nonnegative_number",
-                        "description": "No-load (core-loss) shunt conductance [S], stamped across the 'from'-side (wye) winding"
-                    },
-                    "b_no_load": {
-                        "type": "number",
-                        "description": "No-load (magnetising) shunt susceptance [S], stamped across the 'from'-side (wye) winding"
                     }
                 },
                 "required": [
